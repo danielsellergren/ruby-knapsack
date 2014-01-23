@@ -16,3 +16,20 @@ num_items.times do
   ran_value = (rand * 100).round(2)
   items << Item.new(ran_weight, ran_value)
 end
+
+# Generate initial knapsacks
+num_knapsacks.times do 
+  ran_items = []
+  num_items.times do
+    if rand < 0.1
+      ran_items << 1
+    else
+      ran_items << 0
+    end
+  end
+  knapsacks << Knapsack.new(ran_items)
+end
+
+knapsacks.each do |knapsack|
+  p knapsack.chromosome
+end

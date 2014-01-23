@@ -1,17 +1,9 @@
 class Knapsack
 
-  @items = []
+  attr_accessor :chromosome
 
-  def add_item(item)
-    @items << item
-  end
-
-  def total_weight
-    total = 0.0
-    @items.each do |item|
-      total += item.weight
-    end
-    total
+  def initialize(chromosome)
+    @chromosome = chromosome
   end
 
 end
