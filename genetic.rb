@@ -9,3 +9,10 @@ end
 
 items = []
 knapsacks = []
+
+# Generate random items
+num_items.times do
+  ran_weight = (rand * 10).round(2)
+  ran_value = (rand * 100).round(2)
+  items << Item.new(ran_weight, ran_value)
+end
