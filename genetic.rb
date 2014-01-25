@@ -35,6 +35,8 @@ end
 until generation > num_generations
   
   sum_value = 0.0
+  best_value = 0.0
+  max_weight = 20.0
 
   # Calculate value and weight
   knapsacks.each do |knapsack|
@@ -49,6 +51,9 @@ until generation > num_generations
     end
     knapsack.total_weight = total_weight
     knapsack.total_value = total_value
+    if total_weight < max_weight && total_value > best_value
+      best_value = total_value
+    end
     sum_value += total_value
     # p total_weight
     # p total_value
@@ -65,14 +70,18 @@ until generation > num_generations
       rel_value = knapsack.total_value / sum_value
       rnd_sum += rel_value
       if rnd_sum > rnd
-        new_generation << knapsack
+        break
       else
         rnd_selected += 1
       end
     end
+    new_generation << knapsacks[rnd_selected]
   end
 
+  p knapsacks.length
+  knapsacks = []
   knapsacks = new_generation
+  p knapsacks.length
 
   # Randomly select two knapsacks
   rnd_knap_1 = (0...num_knapsacks).to_a.sample
@@ -119,6 +128,8 @@ until generation > num_generations
     end
   end
 
+  p 'Best value:'
+  p best_value
   generation += 1
 
 end
