@@ -9,6 +9,7 @@ end
 
 items = []
 knapsacks = []
+generation = 1
 
 # Generate random items
 num_items.times do
@@ -30,6 +31,27 @@ num_knapsacks.times do
   knapsacks << Knapsack.new(ran_items)
 end
 
-knapsacks.each do |knapsack|
-  p knapsack.chromosome
+# Main loop
+until generation > num_generations
+  
+  sum_value = 0.0
+
+  # Calculate value and weight
+  knapsacks.each do |knapsack|
+    # p knapsack.chromosome
+    total_weight = 0.0
+    total_value = 0.0
+    knapsack.chromosome.each_with_index do |gene, index|
+      if gene === 1
+        total_weight += items[index].weight
+        total_value += items[index].value
+      end
+    end
+    knapsack.total_weight = total_weight
+    knapsack.total_value = total_value
+    sum_value += total_value
+    # p total_weight
+    # p total_value
+  end
+
 end
