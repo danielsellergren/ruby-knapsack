@@ -74,7 +74,7 @@ until generation > num_generations
 
   # Use Roulette wheel algorithm to proportionately create next generation
   new_generation = []
-  elitist = Knapsack.new(knapsacks[best_knapsack].chromosome)
+  elitist = Knapsack.new(knapsacks[best_knapsack].chromosome.clone)
   puts 'Elitist: ' + best_knapsack.to_s if verbose
   p elitist if verbose
   (num_knapsacks-1).times do
@@ -91,7 +91,7 @@ until generation > num_generations
         rnd_selected += 1
       end
     end
-    new_generation << Knapsack.new(knapsacks[rnd_selected].chromosome)
+    new_generation << Knapsack.new(knapsacks[rnd_selected].chromosome.clone)
   end
 
   # Replace old generation with new
