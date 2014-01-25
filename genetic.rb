@@ -104,6 +104,19 @@ until generation > num_generations
 
   # p new_generation[0]
 
+  # Perform mutation
+  knapsacks.each do |knapsack|
+    knapsack.chromosome.each_with_index do |gene, index|
+      if rand < 0.01
+        # p 'Successful mutation.'
+        # p knapsack.chromosome
+        gene == 0 ? gene = 1 : gene = 0
+        knapsack.chromosome[index] = gene
+        # p knapsack.chromosome
+      end
+    end
+  end
+
   generation += 1
 
 end
