@@ -72,6 +72,8 @@ until generation > num_generations
     end
   end
 
+  knapsacks = new_generation
+
   # Randomly select two knapsacks
   rnd_knap_1 = (0...num_knapsacks).to_a.sample
   rnd_knap_2 = rnd_knap_1
