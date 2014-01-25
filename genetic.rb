@@ -5,6 +5,7 @@ if ARGV.length > 0
   num_items = ARGV[0].chomp.to_i
   num_knapsacks = ARGV[1].chomp.to_i
   num_generations = ARGV[2].chomp.to_i
+  verbose = ARGV[3].chomp
 end
 
 items = []
@@ -34,31 +35,44 @@ end
 # Main loop
 until generation > num_generations
   
+  puts "=================================="
+  puts "Begin generation: " + generation.to_s
+  puts "=================================="
+
   sum_value = 0.0
   best_value = 0.0
-  max_weight = 20.0
+  best_knapsack = 0
+  max_weight = 50.0
 
   # Calculate value and weight
-  knapsacks.each do |knapsack|
+  knapsacks.each_with_index do |knapsack, index|
     total_weight = 0.0
     total_value = 0.0
-    knapsack.chromosome.each_with_index do |gene, index|
+    knapsack.chromosome.each_with_index do |gene, gene_index|
       if gene === 1
-        total_weight += items[index].weight
-        total_value += items[index].value
+        total_weight += items[gene_index].weight
+        total_value += items[gene_index].value
       end
+    end
+    if total_weight <= max_weight
+      if total_value > best_value
+        best_value = total_value
+        best_knapsack = index
+      end
+    else 
+      total_value = 0.0
     end
     knapsack.total_weight = total_weight
     knapsack.total_value = total_value
-    if total_weight < max_weight && total_value > best_value
-      best_value = total_value
-    end
     sum_value += total_value
   end
 
   # Use Roulette wheel algorithm to proportionately create next generation
   new_generation = []
-  num_knapsacks.times do
+  elitist = Knapsack.new(knapsacks[best_knapsack].chromosome)
+  puts 'Elitist: ' + best_knapsack.to_s
+  p elitist
+  (num_knapsacks-1).times do
     rnd = rand();
     rnd_sum = 0.0
     rnd_selected = 0;
@@ -81,14 +95,14 @@ until generation > num_generations
   generation += 1
 
   # Randomly select two knapsacks
-  rnd_knap_1 = (0...num_knapsacks).to_a.sample
+  rnd_knap_1 = (0...num_knapsacks-1).to_a.sample
   rnd_knap_2 = rnd_knap_1
   until (rnd_knap_2 != rnd_knap_1)
-    rnd_knap_2 = (0...num_knapsacks).to_a.sample
+    rnd_knap_2 = (0...num_knapsacks-1).to_a.sample
   end
 
   # Perform crossover
-  split_point = (0...num_items).to_a.sample
+  split_point = (0...num_items-1).to_a.sample
   front_1 = knapsacks[rnd_knap_1].chromosome[0, split_point];
   front_2 = knapsacks[rnd_knap_2].chromosome[0, split_point];
   back_1 = knapsacks[rnd_knap_1].chromosome[split_point, num_items-1];
@@ -105,11 +119,18 @@ until generation > num_generations
   knapsacks.each do |knapsack|
     knapsack.chromosome.each_with_index do |gene, index|
       if rand < 0.01
+        puts 'Successful mutation at gene: ' + index.to_s
         gene == 0 ? gene = 1 : gene = 0
         knapsack.chromosome[index] = gene
       end
     end
   end
+
+  puts knapsacks.length
+  knapsacks << elitist
+  puts knapsacks.length
+  puts 'Last knapsack:'
+  p knapsacks[num_knapsacks-1]
 
   puts 'Best value:'
   p best_value
