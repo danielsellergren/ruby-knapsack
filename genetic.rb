@@ -40,7 +40,6 @@ until generation > num_generations
 
   # Calculate value and weight
   knapsacks.each do |knapsack|
-    # p knapsack.chromosome
     total_weight = 0.0
     total_value = 0.0
     knapsack.chromosome.each_with_index do |gene, index|
@@ -55,8 +54,6 @@ until generation > num_generations
       best_value = total_value
     end
     sum_value += total_value
-    # p total_weight
-    # p total_value
   end
 
   # Use Roulette wheel algorithm to proportionately create next generation
@@ -78,10 +75,10 @@ until generation > num_generations
     new_generation << knapsacks[rnd_selected]
   end
 
-  p knapsacks.length
+  # Replace old generation with new
   knapsacks = []
   knapsacks = new_generation
-  p knapsacks.length
+  generation += 1
 
   # Randomly select two knapsacks
   rnd_knap_1 = (0...num_knapsacks).to_a.sample
@@ -90,14 +87,8 @@ until generation > num_generations
     rnd_knap_2 = (0...num_knapsacks).to_a.sample
   end
 
-  p knapsacks[rnd_knap_1].chromosome
-  p knapsacks[rnd_knap_2].chromosome
-
   # Perform crossover
   split_point = (0...num_items).to_a.sample
-
-  # p split_point
-
   front_1 = knapsacks[rnd_knap_1].chromosome[0, split_point];
   front_2 = knapsacks[rnd_knap_2].chromosome[0, split_point];
   back_1 = knapsacks[rnd_knap_1].chromosome[split_point, num_items-1];
@@ -110,26 +101,17 @@ until generation > num_generations
   knapsacks[rnd_knap_1] = new_1
   knapsacks[rnd_knap_2] = new_2
 
-  # p knapsacks[rnd_knap_1].chromosome
-  # p knapsacks[rnd_knap_2].chromosome
-
-  # p new_generation[0]
-
   # Perform mutation
   knapsacks.each do |knapsack|
     knapsack.chromosome.each_with_index do |gene, index|
       if rand < 0.01
-        # p 'Successful mutation.'
-        # p knapsack.chromosome
         gene == 0 ? gene = 1 : gene = 0
         knapsack.chromosome[index] = gene
-        # p knapsack.chromosome
       end
     end
   end
 
-  p 'Best value:'
+  puts 'Best value:'
   p best_value
-  generation += 1
 
 end
