@@ -5,7 +5,12 @@ if ARGV.length > 0
   num_items = ARGV[0].chomp.to_i
   num_knapsacks = ARGV[1].chomp.to_i
   num_generations = ARGV[2].chomp.to_i
-  verbose = ARGV[3].chomp
+  verbose = ARGV[3]
+  if verbose == "true"
+    verbose = true
+  else
+    verbose = false
+  end
 end
 
 items = []
@@ -35,9 +40,9 @@ end
 # Main loop
 until generation > num_generations
   
-  puts "=================================="
-  puts "Begin generation: " + generation.to_s
-  puts "=================================="
+  puts "==================================" if verbose
+  puts "Begin generation: " + generation.to_s if verbose
+  puts "==================================" if verbose
 
   sum_value = 0.0
   best_value = 0.0
@@ -70,8 +75,8 @@ until generation > num_generations
   # Use Roulette wheel algorithm to proportionately create next generation
   new_generation = []
   elitist = Knapsack.new(knapsacks[best_knapsack].chromosome)
-  puts 'Elitist: ' + best_knapsack.to_s
-  p elitist
+  puts 'Elitist: ' + best_knapsack.to_s if verbose
+  p elitist if verbose
   (num_knapsacks-1).times do
     rnd = rand();
     rnd_sum = 0.0
@@ -86,7 +91,7 @@ until generation > num_generations
         rnd_selected += 1
       end
     end
-    new_generation << knapsacks[rnd_selected]
+    new_generation << Knapsack.new(knapsacks[rnd_selected].chromosome)
   end
 
   # Replace old generation with new
@@ -119,19 +124,17 @@ until generation > num_generations
   knapsacks.each do |knapsack|
     knapsack.chromosome.each_with_index do |gene, index|
       if rand < 0.01
-        puts 'Successful mutation at gene: ' + index.to_s
+        puts 'Successful mutation at gene: ' + index.to_s if verbose
         gene == 0 ? gene = 1 : gene = 0
         knapsack.chromosome[index] = gene
       end
     end
   end
 
-  puts knapsacks.length
   knapsacks << elitist
-  puts knapsacks.length
-  puts 'Last knapsack:'
-  p knapsacks[num_knapsacks-1]
 
+  puts 'Last knapsack:' if verbose
+  p knapsacks[num_knapsacks-1] if verbose
   puts 'Best value:'
   p best_value
 
